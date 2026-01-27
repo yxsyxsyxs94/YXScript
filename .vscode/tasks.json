@@ -6,6 +6,12 @@
             "script": "build",
             "label": "build",
             "group": "build"
+        },
+        {
+            "type": "npm",
+            "script": "bundle",
+            "label": "bundle",
+            "group": "build"
         }
     ]
 }
