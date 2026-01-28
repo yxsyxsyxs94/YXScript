@@ -1,6 +1,9 @@
 import * as readline from "readline";
 import { Scanner } from "./scanner";
 import { Token, TokenType } from "./token";
+import { Compiler } from "./compiler";
+import { Chunk, initChunk } from "./chunk";
+import { VM } from "./vm";
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -18,15 +21,13 @@ function getInput(prompt: string): Promise<string> {
 async function main() {
     for (; ;) {
         const input = await getInput("> ");
-        const scanner: Scanner = new Scanner(input);
-        let token: Token | undefined;
-        do {
-            token = scanner.scanToken();
-            console.log(token);
-        } while (token && token.type !== TokenType.EOF);
         if (input.toLowerCase() === "exit") {
             break;
         }
+        const chunk: Chunk = initChunk();
+        Compiler.compile(input, chunk);
+        VM.initialize();
+        VM.run(chunk);
     }
     rl.close();
 }

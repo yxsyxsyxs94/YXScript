@@ -5,7 +5,7 @@ export class Scanner {
     private start: number = 0;
     private current: number = 0;
 
-    constructor(input: string) {
+    constructor (input: string) {
         this.source = input;
     }
 
@@ -89,7 +89,7 @@ export class Scanner {
         //然后设置起始位置
         this.start = this.current;
         if (this.isAtEnd()) {
-            return undefined
+            return this.makeToken(TokenType.EOF);
         }
         const c = this.advance();
         if (this.isDigit(c)) {
