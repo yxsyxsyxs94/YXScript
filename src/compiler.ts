@@ -51,7 +51,7 @@ export class Compiler {
         { prefix: undefined, infix: undefined, precedence: Precedence.NONE }, // RIGHT_BRACE
         { prefix: undefined, infix: undefined, precedence: Precedence.NONE }, // COMMA
         { prefix: undefined, infix: undefined, precedence: Precedence.NONE }, // DOT
-        { prefix: undefined, infix: this.binary.bind(this), precedence: Precedence.TERM }, // MINUS
+        { prefix: this.unary.bind(this), infix: this.binary.bind(this), precedence: Precedence.TERM }, // MINUS
         { prefix: undefined, infix: this.binary.bind(this), precedence: Precedence.TERM }, // PLUS
         { prefix: undefined, infix: undefined, precedence: Precedence.NONE }, // SEMICOLON
         { prefix: undefined, infix: this.binary.bind(this), precedence: Precedence.FACTOR }, // SLASH
@@ -144,11 +144,22 @@ export class Compiler {
                 break;
             case TokenType.MINUS:
                 this.emitByte(OpCode.OP_SUBTRACT);
+                break;
             case TokenType.STAR:
                 this.emitByte(OpCode.OP_MULTIPLY);
                 break;
             case TokenType.SLASH:
                 this.emitByte(OpCode.OP_DIVIDE);
+                break;
+        }
+    }
+
+    private static unary(): void {
+        const operatorType = this.previous!.type;
+        this.parsePrecedence(Precedence.UNARY);
+        switch (operatorType) {
+            case TokenType.MINUS:
+                this.emitByte(OpCode.OP_NEGATE);
                 break;
         }
     }
